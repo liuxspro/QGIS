@@ -5200,14 +5200,21 @@ void QgisApp::updateRecentProjectPaths()
   int projectIndex = 0;
   for ( const QgsRecentProjectItemsModel::RecentProjectData &recentProject : constMRecentProjects )
   {
+    QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromUri(
+      recentProject.path
+    );
+    QString storageFilePath;
+    QString displayPath = recentProject.path;
+    if ( storage )
+      storageFilePath = storage->filePath( recentProject.path );
+    QString displayPath = !storageFilePath.isEmpty() ? storageFilePath : recentProject.path;
+    displayPath = QDir::toNativeSeparators( displayPath );
     QAction *action = mRecentProjectsMenu->addAction(
       QStringLiteral( "%1 (%2)" )
-        .arg( recentProject.title != recentProject.path ? recentProject.title : QFileInfo( recentProject.path ).completeBaseName(), QDir::toNativeSeparators( recentProject.path ) )
+        .arg( recentProject.title != recentProject.path ? recentProject.title : QFileInfo( recentProject.path ).completeBaseName(), displayPath )
         .replace( "&", "&&" )
     );
-
-    QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromUri( recentProject.path );
-
+    
     if ( storage )
     {
       QString path = storage->filePath( recentProject.path );
