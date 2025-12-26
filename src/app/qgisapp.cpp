@@ -5214,7 +5214,7 @@ void QgisApp::updateRecentProjectPaths()
         .arg( recentProject.title != recentProject.path ? recentProject.title : QFileInfo( recentProject.path ).completeBaseName(), displayPath )
         .replace( "&", "&&" )
     );
-    
+
     if ( storage )
     {
       QString path = storage->filePath( recentProject.path );
